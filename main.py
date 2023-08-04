@@ -52,7 +52,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             original = '<name>'  # 将此处替换为您想要替换的固定词语
             replacer = escaped_msg
 
-            response_data = {'response': get_pop_sentence(file_path, [original], [replacer]),
+            response_data = {'data': get_pop_sentence(file_path, [original], [replacer]),
                              'code': 200}
             if response_type == 'json':
                 response = make_response(jsonify(response_data), 200)
@@ -72,7 +72,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             replacer_1 = escaped_msg_1
             replacer_2 = escaped_msg_2
 
-            response_data = {'response': get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2]),
+            response_data = {'data': get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2]),
                              'code': 200}
             if response_type == 'json':
                 response = make_response(jsonify(response_data), 200)
@@ -80,7 +80,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             else:
                 return get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2])
     else:
-        response_data = {'response': get_pop_sentence(file_path),
+        response_data = {'data': get_pop_sentence(file_path),
                          'code': 200}
         if response_type == 'json':
             response = make_response(jsonify(response_data), 200)
