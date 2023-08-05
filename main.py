@@ -35,14 +35,16 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
         response_type = 'json'
 
     if need_parameter:
-        if len(parameters) == 0:
-            error_message = '请提供msg参数作为请求。'
-            error_response = {'error': error_message, 'code': 400}
-            if response_type == 'json':
-                return make_response(jsonify(error_response), 400)
-            else:
-                return '请提供msg参数作为请求。'
-        elif len(parameters) == 1:
+        if len(parameters) == 1:
+            if parameters[0] is None:
+                error_message = '请提供msg参数作为请求。'
+                error_response = {'error': error_message, 'code': 400}
+                if response_type == 'json':
+                    response = make_response(jsonify(error_response), 400)
+                    response.headers["Content-Type"] = "application/json;charset=utf-8"
+                    return response
+                else:
+                    return error_message
             # 过滤用户输入，防止恶意输入和木马代码
             filtered_msg = filter_input(parameters[0])
             filtered_msg = filtered_msg.rstrip('typejson')
@@ -56,6 +58,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
                              'code': 200}
             if response_type == 'json':
                 response = make_response(jsonify(response_data), 200)
+                response.headers["Content-Type"] = "application/json;charset=utf-8"
                 return response
             else:
                 return get_pop_sentence(file_path, [original], [replacer])
@@ -75,7 +78,8 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             response_data = {'data': get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2]),
                              'code': 200}
             if response_type == 'json':
-                response = make_response(jsonify(response_data), 200)
+                response= make_response(jsonify(response_data), 200)
+                response.headers["Content-Type"] = "application/json;charset=utf-8"
                 return response
             else:
                 return get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2])
@@ -84,6 +88,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
                          'code': 200}
         if response_type == 'json':
             response = make_response(jsonify(response_data), 200)
+            response.headers["Content-Type"] = "application/json;charset=utf-8"
             return response
         else:
             return get_pop_sentence(file_path)
@@ -124,6 +129,7 @@ def get_pop_sentence(file_path, original=[], replacer=[]):
 def handle_429(error):
     response_data = {'error': 'Too Many Requests', 'code': 429}
     response = make_response(jsonify(response_data), 429)
+    response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
 
