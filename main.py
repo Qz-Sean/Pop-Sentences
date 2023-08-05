@@ -40,7 +40,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
                 error_message = '请提供msg参数作为请求。'
                 error_response = {'error': error_message, 'code': 400}
                 if response_type == 'json':
-                    response = make_response(jsonify(error_response), 400)
+                    response = make_response(json.dumps(error_response, ensure_ascii=False).encode('utf-8'), 400)
                     response.headers["Content-Type"] = "application/json;charset=utf-8"
                     return response
                 else:
@@ -57,7 +57,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             response_data = {'data': get_pop_sentence(file_path, [original], [replacer]),
                              'code': 200}
             if response_type == 'json':
-                response = make_response(jsonify(response_data), 200)
+                response = make_response(json.dumps(response_data, ensure_ascii=False).encode('utf-8'), 200)
                 response.headers["Content-Type"] = "application/json;charset=utf-8"
                 return response
             else:
@@ -78,7 +78,7 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
             response_data = {'data': get_pop_sentence(file_path, [original_1, original_2], [replacer_1, replacer_2]),
                              'code': 200}
             if response_type == 'json':
-                response= make_response(jsonify(response_data), 200)
+                response= make_response(json.dumps(response_data, ensure_ascii=False).encode('utf-8'), 200)
                 response.headers["Content-Type"] = "application/json;charset=utf-8"
                 return response
             else:
@@ -86,15 +86,16 @@ def generate_response_content(file_path='./wyy.json', need_parameter=False, *par
     else:
         response_data = {'data': get_pop_sentence(file_path),
                          'code': 200}
+        print(response_data)
         if response_type == 'json':
-            response = make_response(jsonify(response_data), 200)
+            response = make_response(json.dumps(response_data, ensure_ascii=False).encode('utf-8'), 200)
             response.headers["Content-Type"] = "application/json;charset=utf-8"
             return response
         else:
             return get_pop_sentence(file_path)
 
 
-def get_pop_sentence(file_path, original=[], replacer=[]):
+def get_pop_sentence(file_path, original=None, replacer=None):
     """
     获取随机语录
 
@@ -106,6 +107,10 @@ def get_pop_sentence(file_path, original=[], replacer=[]):
     返回值：
     随机语录
     """
+    if replacer is None:
+        replacer = []
+    if original is None:
+        original = []
     is_file_path = os.path.exists(file_path)
     try:
         if is_file_path:
@@ -128,7 +133,7 @@ def get_pop_sentence(file_path, original=[], replacer=[]):
 @app.errorhandler(429)
 def handle_429(error):
     response_data = {'error': 'Too Many Requests', 'code': 429}
-    response = make_response(jsonify(response_data), 429)
+    response = make_response(json.dumps(response_data, ensure_ascii=False).encode('utf-8'), 429)
     response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
